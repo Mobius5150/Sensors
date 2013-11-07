@@ -11,9 +11,8 @@ In order to develop for the PIC microprocessors and compile/upload the code you 
 MPLABX IDE: http://www.microchip.com/pagehandler/en-us/family/mplabx/
 
 C Compiler: 
-- Windows: http://www.microchip.com/mplabxc8windows
-- Linux: http://www.microchip.com/mplabxc8linux
-- OS X: http://www.microchip.com/mplabxc8osx
+- Windows: http://www.microchip.com/stellent/idcplg?IdcService=SS_GET_PAGE&nodeId=1406&dDocName=en010014
+See the "MPLAB C for PIC18 v3.46 in LITE mode"
 
 Configuring MPLABX Projects
 ===========================
