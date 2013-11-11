@@ -12,7 +12,7 @@
 #define	ECOCAR_H
 
 // Function prototype declarations for ecocar.c:
-void Broadcast_Data(J1939_MESSAGE *MsgPtr, unsigned char DataType, unsigned char MsgData[]);
+void Broadcast_Data(unsigned char DataType, unsigned char MsgData[]);
 void Request_Data(J1939_MESSAGE *MsgPtr, unsigned int DestAddr, unsigned int DataType);
 void InitEcoCar(void);
 void Set_Oscillator(void);

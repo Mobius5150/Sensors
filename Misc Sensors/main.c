@@ -15,7 +15,7 @@
 #pragma config WDT = OFF        // Watchdog Timer disabled (control is placed on the SWDTEN bit)
 
 J1939_MESSAGE Msg;
-void Process_and_Send_Data(J1939_MESSAGE *MsgPtr, unsigned char DataType);
+void Process_and_Send_Data();
 void ADC_Init(void);
 
 volatile int need_to_send_data = 0;
@@ -96,7 +96,7 @@ void main( void ) {
         // Check if it is time to send data
         if( need_to_send_data == 1 ) {
             need_to_send_data = 0;
-            Process_and_Send_Data(&Msg, Msg.Data[0]);
+            Process_and_Send_Data();
         }
     }
 }
@@ -116,18 +116,17 @@ void high_interrupt(void) {
 }
 #pragma code
 
-void Process_and_Send_Data(J1939_MESSAGE *MsgPtr, unsigned char DataType)
+void Process_and_Send_Data()
 {
     int i;
 
-    for(i=0;i<sizeof(sensorData)/sizeof(sensorData[0]);i++) {
-        if(DataType == sensorData[i][0]) {
+    for(i=0;i<(sizeof(sensorData)/sizeof(sensorData[0]));i++) {
             // Broadcast the data:
             char data[8];
             data[0] = sensorData[i][1]; // MSB
             data[1] = sensorData[i][2]; // LSB
-            Broadcast_Data(MsgPtr, DataType, data);
-        }
+            Broadcast_Data(sensorData[i][0], data);
+            Delay10KTCYx(1000);
     }
 }
 

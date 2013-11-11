@@ -67,7 +67,10 @@ void main( void )
     BAUDCONbits.BRG16 = 0;	// 8-bit BR Generator
     
     J1939_Initialization( TRUE );	// This routine initializes various registers for CANbus operation. Not too necessarily to know what goes on in here.
-		
+
+    INTCONbits.PEIE = 1; // Enable peripheral interrupts
+    INTCONbits.GIE = 1; // Enable global interrupts
+
     // This code checks for any nodes claiming the same address on our network:
     // If there's address contention, we've designed our network wrong.
     while (J1939_Flags.WaitingForAddressClaimContention)
@@ -80,9 +83,6 @@ void main( void )
     while (1)
     {
         //Receive Messages
-        J1939_Poll(10);
-//        putSerialData(DATA_VACCESSORY, 0, 0);
-//        Delay1KTCYx(100);
         while (RXQueueCount > 0)
         {
             //Testing delete later
@@ -90,6 +90,10 @@ void main( void )
             if(Msg.PDUFormat == PDU_BROADCAST && Msg.GroupExtension != ERR_TIMEOUT && Msg.GroupExtension != CYCLE_COMPLETE)
             {
                 putSerialData(Msg.GroupExtension, Msg.Data[1], Msg.Data[0]);
+            }
+            if (J1939_Flags.ReceivedMessagesDropped) {
+                i = 1;
+                J1939_Flags.ReceivedMessagesDropped = 0;
             }
             continue;
             
@@ -148,3 +152,15 @@ void main( void )
     }
     
 }
+
+#pragma interrupt isr
+void isr(void) {
+    if (PIR3 != 0x00)
+        J1939_ISR();
+}
+
+#pragma code high_vector = 0x08
+void high_interrupt(void) {
+    _asm GOTO isr _endasm
+}
+#pragma code

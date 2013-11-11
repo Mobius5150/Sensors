@@ -1,1 +1,2 @@
-Warning[2054] C:\Users\Mike\Documents\GitHub\Sensors\Misc Sensors\main.c 129 : suspicious pointer conversion
+Warning[2058] C:\Users\Mike\Documents\GitHub\Sensors\Misc Sensors\main.c 99 : call of function without prototype
+Warning[2054] C:\Users\Mike\Documents\GitHub\Sensors\Misc Sensors\main.c 128 : suspicious pointer conversion

@@ -29,7 +29,7 @@ void Broadcast_Data(J1939_MESSAGE *MsgPtr, unsigned char DataType, unsigned char
 	}
 	while (J1939_EnqueueMessage( MsgPtr ) != RC_SUCCESS)
         {
-            J1939_Poll(5);
+//            J1939_Poll(5);
         }
 }
 
