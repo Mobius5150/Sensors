@@ -1,7 +1,5 @@
-build/default/production/J1939.o : \
-	C:/Users/Cam/Google\ Drive/EcoCar\ EE\ Team/Sensors/Final\ CAN\ Bus\ Network\ Code/Slave\ Node\ -\ Misc\ Sensors/J1939.C \
-	C:/Users/Cam/Google\ Drive/EcoCar\ EE\ Team/Sensors/Final\ CAN\ Bus\ Network\ Code/Slave\ Node\ -\ Misc\ Sensors/J1939.H \
-	C:/Program\ Files\ (x86)/Microchip/mplabc18/v3.40/h/p18cxxx.h \
-	C:/Program\ Files\ (x86)/Microchip/mplabc18/v3.40/h/p18f2685.h \
-	C:/Users/Cam/Google\ Drive/EcoCar\ EE\ Team/Sensors/Final\ CAN\ Bus\ Network\ Code/Slave\ Node\ -\ Misc\ Sensors/j1939.def \
+build/default/production/J1939.o:  \
+	C:/Users/Eco\ Car/Documents/GitProjects/Sensors/Misc\ Sensors/J1939.C  \
+	C:/Users/Eco\ Car/Documents/GitProjects/Sensors/Misc\ Sensors/J1939.H  \
+	C:/Users/Eco\ Car/Documents/GitProjects/Sensors/Misc\ Sensors/j1939.def  \
 

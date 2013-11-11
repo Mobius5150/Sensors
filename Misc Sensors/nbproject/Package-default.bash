@@ -10,9 +10,9 @@ CND_CONF=default
 CND_DISTDIR=dist
 TMPDIR=build/${CND_CONF}/${IMAGE_TYPE}/tmp-packaging
 TMPDIRNAME=tmp-packaging
-OUTPUT_PATH=dist/${CND_CONF}/${IMAGE_TYPE}/Slave_Node_-_Misc_Sensors.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
-OUTPUT_BASENAME=Slave_Node_-_Misc_Sensors.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
-PACKAGE_TOP_DIR=slavenode-miscsensors/
+OUTPUT_PATH=dist/${CND_CONF}/${IMAGE_TYPE}/Misc_Sensors.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
+OUTPUT_BASENAME=Misc_Sensors.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
+PACKAGE_TOP_DIR=miscsensors/
 
 # Functions
 function checkReturnCode
@@ -57,15 +57,15 @@ mkdir -p ${TMPDIR}
 
 # Copy files and create directories and links
 cd "${TOP}"
-makeDirectory ${TMPDIR}/slavenode-miscsensors/bin
+makeDirectory ${TMPDIR}/miscsensors/bin
 copyFileToTmpDir "${OUTPUT_PATH}" "${TMPDIR}/${PACKAGE_TOP_DIR}bin/${OUTPUT_BASENAME}" 0755
 
 
 # Generate tar file
 cd "${TOP}"
-rm -f ${CND_DISTDIR}/${CND_CONF}/package/slavenode-miscsensors.tar
+rm -f ${CND_DISTDIR}/${CND_CONF}/package/miscsensors.tar
 cd ${TMPDIR}
-tar -vcf ../../../../${CND_DISTDIR}/${CND_CONF}/package/slavenode-miscsensors.tar *
+tar -vcf ../../../../${CND_DISTDIR}/${CND_CONF}/package/miscsensors.tar *
 checkReturnCode
 
 # Cleanup
