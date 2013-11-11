@@ -10,9 +10,9 @@ CND_CONF=default
 CND_DISTDIR=dist
 TMPDIR=build/${CND_CONF}/${IMAGE_TYPE}/tmp-packaging
 TMPDIRNAME=tmp-packaging
-OUTPUT_PATH=dist/${CND_CONF}/${IMAGE_TYPE}/Passive_Listener_-_Wireless_Modem__to_Base_.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
-OUTPUT_BASENAME=Passive_Listener_-_Wireless_Modem__to_Base_.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
-PACKAGE_TOP_DIR=passivelistener-wirelessmodem(tobase)/
+OUTPUT_PATH=dist/${CND_CONF}/${IMAGE_TYPE}/Passive_Listener_-_Wireless_Modem.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
+OUTPUT_BASENAME=Passive_Listener_-_Wireless_Modem.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
+PACKAGE_TOP_DIR=passivelistener-wirelessmodem/
 
 # Functions
 function checkReturnCode
@@ -57,15 +57,15 @@ mkdir -p ${TMPDIR}
 
 # Copy files and create directories and links
 cd "${TOP}"
-makeDirectory ${TMPDIR}/passivelistener-wirelessmodem(tobase)/bin
+makeDirectory ${TMPDIR}/passivelistener-wirelessmodem/bin
 copyFileToTmpDir "${OUTPUT_PATH}" "${TMPDIR}/${PACKAGE_TOP_DIR}bin/${OUTPUT_BASENAME}" 0755
 
 
 # Generate tar file
 cd "${TOP}"
-rm -f ${CND_DISTDIR}/${CND_CONF}/package/passivelistener-wirelessmodem(tobase).tar
+rm -f ${CND_DISTDIR}/${CND_CONF}/package/passivelistener-wirelessmodem.tar
 cd ${TMPDIR}
-tar -vcf ../../../../${CND_DISTDIR}/${CND_CONF}/package/passivelistener-wirelessmodem(tobase).tar *
+tar -vcf ../../../../${CND_DISTDIR}/${CND_CONF}/package/passivelistener-wirelessmodem.tar *
 checkReturnCode
 
 # Cleanup

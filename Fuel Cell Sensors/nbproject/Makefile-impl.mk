@@ -24,7 +24,7 @@ CLEAN_SUBPROJECTS=${CLEAN_SUBPROJECTS_${SUBPROJECTS}}
 
 
 # Project Name
-PROJECTNAME=Slave Node - Fuel Cell
+PROJECTNAME=Fuel Cell Sensors
 
 # Active Configuration
 DEFAULTCONF=default

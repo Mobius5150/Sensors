@@ -81,14 +81,18 @@ void main( void )
     {
         //Receive Messages
         J1939_Poll(10);
+//        putSerialData(DATA_VACCESSORY, 0, 0);
+//        Delay1KTCYx(100);
         while (RXQueueCount > 0)
         {
             //Testing delete later
-            //J1939_DequeueMessage( &Msg );
-            //if(Msg.PDUFormat == PDU_BROADCAST && Msg.GroupExtension != ERR_TIMEOUT && Msg.GroupExtension != CYCLE_COMPLETE)
-            //{
-            //    putSerialData(Msg.GroupExtension, Msg.Data[1], Msg.Data[0]);
-            //}
+            J1939_DequeueMessage( &Msg );
+            if(Msg.PDUFormat == PDU_BROADCAST && Msg.GroupExtension != ERR_TIMEOUT && Msg.GroupExtension != CYCLE_COMPLETE)
+            {
+                putSerialData(Msg.GroupExtension, Msg.Data[1], Msg.Data[0]);
+            }
+            continue;
+            
             J1939_DequeueMessage( &Msg );
             if (Msg.PDUFormat == PDU_BROADCAST && NEW_CYCLE == 1 && Msg.GroupExtension != CYCLE_COMPLETE)
             {

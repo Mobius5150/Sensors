@@ -24,7 +24,7 @@ CLEAN_SUBPROJECTS=${CLEAN_SUBPROJECTS_${SUBPROJECTS}}
 
 
 # Project Name
-PROJECTNAME=Passive Listener - Wireless Modem (to Base)
+PROJECTNAME=Passive Listener - Wireless Modem
 
 # Active Configuration
 DEFAULTCONF=default

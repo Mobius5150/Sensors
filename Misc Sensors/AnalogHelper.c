@@ -24,8 +24,7 @@ int ReadAnalog(int analogInput) {
     for(;j<10;j++) {
         ConvertADC();           //Read from ADC
         while(BusyADC());       //Wait for ADC to finish conversion
-        intermediate = ReadADC();
-        result += intermediate;     // Read result
+        result += ReadADC();     // Read result
     }
 
     // Disable analog inputs

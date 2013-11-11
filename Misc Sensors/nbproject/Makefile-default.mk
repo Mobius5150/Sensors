@@ -89,7 +89,6 @@ ifeq ($(TYPE_IMAGE), DEBUG_RUN)
 ${OBJECTDIR}/J1939.o: J1939.C  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
 	@${RM} ${OBJECTDIR}/J1939.o.d 
-	@${RM} ${OBJECTDIR}/J1939.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE) -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1 -p$(MP_PROCESSOR_OPTION) -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/J1939.o   J1939.C 
 	@${DEP_GEN} -d ${OBJECTDIR}/J1939.o 
 	@${FIXDEPS} "${OBJECTDIR}/J1939.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
@@ -97,7 +96,6 @@ ${OBJECTDIR}/J1939.o: J1939.C  nbproject/Makefile-${CND_CONF}.mk
 ${OBJECTDIR}/main.o: main.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
 	@${RM} ${OBJECTDIR}/main.o.d 
-	@${RM} ${OBJECTDIR}/main.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE) -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1 -p$(MP_PROCESSOR_OPTION) -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/main.o   main.c 
 	@${DEP_GEN} -d ${OBJECTDIR}/main.o 
 	@${FIXDEPS} "${OBJECTDIR}/main.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
@@ -105,7 +103,6 @@ ${OBJECTDIR}/main.o: main.c  nbproject/Makefile-${CND_CONF}.mk
 ${OBJECTDIR}/ecocar.o: ecocar.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
 	@${RM} ${OBJECTDIR}/ecocar.o.d 
-	@${RM} ${OBJECTDIR}/ecocar.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE) -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1 -p$(MP_PROCESSOR_OPTION) -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/ecocar.o   ecocar.c 
 	@${DEP_GEN} -d ${OBJECTDIR}/ecocar.o 
 	@${FIXDEPS} "${OBJECTDIR}/ecocar.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
@@ -113,7 +110,6 @@ ${OBJECTDIR}/ecocar.o: ecocar.c  nbproject/Makefile-${CND_CONF}.mk
 ${OBJECTDIR}/ADC/adcbusy.o: ADC/adcbusy.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR}/ADC 
 	@${RM} ${OBJECTDIR}/ADC/adcbusy.o.d 
-	@${RM} ${OBJECTDIR}/ADC/adcbusy.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE) -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1 -p$(MP_PROCESSOR_OPTION) -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/ADC/adcbusy.o   ADC/adcbusy.c 
 	@${DEP_GEN} -d ${OBJECTDIR}/ADC/adcbusy.o 
 	@${FIXDEPS} "${OBJECTDIR}/ADC/adcbusy.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
@@ -121,7 +117,6 @@ ${OBJECTDIR}/ADC/adcbusy.o: ADC/adcbusy.c  nbproject/Makefile-${CND_CONF}.mk
 ${OBJECTDIR}/ADC/adcclose.o: ADC/adcclose.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR}/ADC 
 	@${RM} ${OBJECTDIR}/ADC/adcclose.o.d 
-	@${RM} ${OBJECTDIR}/ADC/adcclose.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE) -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1 -p$(MP_PROCESSOR_OPTION) -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/ADC/adcclose.o   ADC/adcclose.c 
 	@${DEP_GEN} -d ${OBJECTDIR}/ADC/adcclose.o 
 	@${FIXDEPS} "${OBJECTDIR}/ADC/adcclose.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
@@ -129,7 +124,6 @@ ${OBJECTDIR}/ADC/adcclose.o: ADC/adcclose.c  nbproject/Makefile-${CND_CONF}.mk
 ${OBJECTDIR}/ADC/adcconv.o: ADC/adcconv.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR}/ADC 
 	@${RM} ${OBJECTDIR}/ADC/adcconv.o.d 
-	@${RM} ${OBJECTDIR}/ADC/adcconv.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE) -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1 -p$(MP_PROCESSOR_OPTION) -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/ADC/adcconv.o   ADC/adcconv.c 
 	@${DEP_GEN} -d ${OBJECTDIR}/ADC/adcconv.o 
 	@${FIXDEPS} "${OBJECTDIR}/ADC/adcconv.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
@@ -137,7 +131,6 @@ ${OBJECTDIR}/ADC/adcconv.o: ADC/adcconv.c  nbproject/Makefile-${CND_CONF}.mk
 ${OBJECTDIR}/ADC/adcopen.o: ADC/adcopen.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR}/ADC 
 	@${RM} ${OBJECTDIR}/ADC/adcopen.o.d 
-	@${RM} ${OBJECTDIR}/ADC/adcopen.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE) -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1 -p$(MP_PROCESSOR_OPTION) -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/ADC/adcopen.o   ADC/adcopen.c 
 	@${DEP_GEN} -d ${OBJECTDIR}/ADC/adcopen.o 
 	@${FIXDEPS} "${OBJECTDIR}/ADC/adcopen.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
@@ -145,7 +138,6 @@ ${OBJECTDIR}/ADC/adcopen.o: ADC/adcopen.c  nbproject/Makefile-${CND_CONF}.mk
 ${OBJECTDIR}/ADC/adcread.o: ADC/adcread.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR}/ADC 
 	@${RM} ${OBJECTDIR}/ADC/adcread.o.d 
-	@${RM} ${OBJECTDIR}/ADC/adcread.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE) -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1 -p$(MP_PROCESSOR_OPTION) -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/ADC/adcread.o   ADC/adcread.c 
 	@${DEP_GEN} -d ${OBJECTDIR}/ADC/adcread.o 
 	@${FIXDEPS} "${OBJECTDIR}/ADC/adcread.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
@@ -153,7 +145,6 @@ ${OBJECTDIR}/ADC/adcread.o: ADC/adcread.c  nbproject/Makefile-${CND_CONF}.mk
 ${OBJECTDIR}/ADC/adcselchconv.o: ADC/adcselchconv.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR}/ADC 
 	@${RM} ${OBJECTDIR}/ADC/adcselchconv.o.d 
-	@${RM} ${OBJECTDIR}/ADC/adcselchconv.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE) -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1 -p$(MP_PROCESSOR_OPTION) -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/ADC/adcselchconv.o   ADC/adcselchconv.c 
 	@${DEP_GEN} -d ${OBJECTDIR}/ADC/adcselchconv.o 
 	@${FIXDEPS} "${OBJECTDIR}/ADC/adcselchconv.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
@@ -161,7 +152,6 @@ ${OBJECTDIR}/ADC/adcselchconv.o: ADC/adcselchconv.c  nbproject/Makefile-${CND_CO
 ${OBJECTDIR}/ADC/adcsetch.o: ADC/adcsetch.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR}/ADC 
 	@${RM} ${OBJECTDIR}/ADC/adcsetch.o.d 
-	@${RM} ${OBJECTDIR}/ADC/adcsetch.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE) -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1 -p$(MP_PROCESSOR_OPTION) -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/ADC/adcsetch.o   ADC/adcsetch.c 
 	@${DEP_GEN} -d ${OBJECTDIR}/ADC/adcsetch.o 
 	@${FIXDEPS} "${OBJECTDIR}/ADC/adcsetch.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
@@ -169,7 +159,6 @@ ${OBJECTDIR}/ADC/adcsetch.o: ADC/adcsetch.c  nbproject/Makefile-${CND_CONF}.mk
 ${OBJECTDIR}/AnalogHelper.o: AnalogHelper.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
 	@${RM} ${OBJECTDIR}/AnalogHelper.o.d 
-	@${RM} ${OBJECTDIR}/AnalogHelper.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE) -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1 -p$(MP_PROCESSOR_OPTION) -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/AnalogHelper.o   AnalogHelper.c 
 	@${DEP_GEN} -d ${OBJECTDIR}/AnalogHelper.o 
 	@${FIXDEPS} "${OBJECTDIR}/AnalogHelper.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
@@ -178,7 +167,6 @@ else
 ${OBJECTDIR}/J1939.o: J1939.C  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
 	@${RM} ${OBJECTDIR}/J1939.o.d 
-	@${RM} ${OBJECTDIR}/J1939.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE) -p$(MP_PROCESSOR_OPTION) -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/J1939.o   J1939.C 
 	@${DEP_GEN} -d ${OBJECTDIR}/J1939.o 
 	@${FIXDEPS} "${OBJECTDIR}/J1939.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
@@ -186,7 +174,6 @@ ${OBJECTDIR}/J1939.o: J1939.C  nbproject/Makefile-${CND_CONF}.mk
 ${OBJECTDIR}/main.o: main.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
 	@${RM} ${OBJECTDIR}/main.o.d 
-	@${RM} ${OBJECTDIR}/main.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE) -p$(MP_PROCESSOR_OPTION) -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/main.o   main.c 
 	@${DEP_GEN} -d ${OBJECTDIR}/main.o 
 	@${FIXDEPS} "${OBJECTDIR}/main.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
@@ -194,7 +181,6 @@ ${OBJECTDIR}/main.o: main.c  nbproject/Makefile-${CND_CONF}.mk
 ${OBJECTDIR}/ecocar.o: ecocar.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
 	@${RM} ${OBJECTDIR}/ecocar.o.d 
-	@${RM} ${OBJECTDIR}/ecocar.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE) -p$(MP_PROCESSOR_OPTION) -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/ecocar.o   ecocar.c 
 	@${DEP_GEN} -d ${OBJECTDIR}/ecocar.o 
 	@${FIXDEPS} "${OBJECTDIR}/ecocar.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
@@ -202,7 +188,6 @@ ${OBJECTDIR}/ecocar.o: ecocar.c  nbproject/Makefile-${CND_CONF}.mk
 ${OBJECTDIR}/ADC/adcbusy.o: ADC/adcbusy.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR}/ADC 
 	@${RM} ${OBJECTDIR}/ADC/adcbusy.o.d 
-	@${RM} ${OBJECTDIR}/ADC/adcbusy.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE) -p$(MP_PROCESSOR_OPTION) -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/ADC/adcbusy.o   ADC/adcbusy.c 
 	@${DEP_GEN} -d ${OBJECTDIR}/ADC/adcbusy.o 
 	@${FIXDEPS} "${OBJECTDIR}/ADC/adcbusy.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
@@ -210,7 +195,6 @@ ${OBJECTDIR}/ADC/adcbusy.o: ADC/adcbusy.c  nbproject/Makefile-${CND_CONF}.mk
 ${OBJECTDIR}/ADC/adcclose.o: ADC/adcclose.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR}/ADC 
 	@${RM} ${OBJECTDIR}/ADC/adcclose.o.d 
-	@${RM} ${OBJECTDIR}/ADC/adcclose.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE) -p$(MP_PROCESSOR_OPTION) -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/ADC/adcclose.o   ADC/adcclose.c 
 	@${DEP_GEN} -d ${OBJECTDIR}/ADC/adcclose.o 
 	@${FIXDEPS} "${OBJECTDIR}/ADC/adcclose.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
@@ -218,7 +202,6 @@ ${OBJECTDIR}/ADC/adcclose.o: ADC/adcclose.c  nbproject/Makefile-${CND_CONF}.mk
 ${OBJECTDIR}/ADC/adcconv.o: ADC/adcconv.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR}/ADC 
 	@${RM} ${OBJECTDIR}/ADC/adcconv.o.d 
-	@${RM} ${OBJECTDIR}/ADC/adcconv.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE) -p$(MP_PROCESSOR_OPTION) -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/ADC/adcconv.o   ADC/adcconv.c 
 	@${DEP_GEN} -d ${OBJECTDIR}/ADC/adcconv.o 
 	@${FIXDEPS} "${OBJECTDIR}/ADC/adcconv.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
@@ -226,7 +209,6 @@ ${OBJECTDIR}/ADC/adcconv.o: ADC/adcconv.c  nbproject/Makefile-${CND_CONF}.mk
 ${OBJECTDIR}/ADC/adcopen.o: ADC/adcopen.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR}/ADC 
 	@${RM} ${OBJECTDIR}/ADC/adcopen.o.d 
-	@${RM} ${OBJECTDIR}/ADC/adcopen.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE) -p$(MP_PROCESSOR_OPTION) -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/ADC/adcopen.o   ADC/adcopen.c 
 	@${DEP_GEN} -d ${OBJECTDIR}/ADC/adcopen.o 
 	@${FIXDEPS} "${OBJECTDIR}/ADC/adcopen.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
@@ -234,7 +216,6 @@ ${OBJECTDIR}/ADC/adcopen.o: ADC/adcopen.c  nbproject/Makefile-${CND_CONF}.mk
 ${OBJECTDIR}/ADC/adcread.o: ADC/adcread.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR}/ADC 
 	@${RM} ${OBJECTDIR}/ADC/adcread.o.d 
-	@${RM} ${OBJECTDIR}/ADC/adcread.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE) -p$(MP_PROCESSOR_OPTION) -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/ADC/adcread.o   ADC/adcread.c 
 	@${DEP_GEN} -d ${OBJECTDIR}/ADC/adcread.o 
 	@${FIXDEPS} "${OBJECTDIR}/ADC/adcread.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
@@ -242,7 +223,6 @@ ${OBJECTDIR}/ADC/adcread.o: ADC/adcread.c  nbproject/Makefile-${CND_CONF}.mk
 ${OBJECTDIR}/ADC/adcselchconv.o: ADC/adcselchconv.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR}/ADC 
 	@${RM} ${OBJECTDIR}/ADC/adcselchconv.o.d 
-	@${RM} ${OBJECTDIR}/ADC/adcselchconv.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE) -p$(MP_PROCESSOR_OPTION) -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/ADC/adcselchconv.o   ADC/adcselchconv.c 
 	@${DEP_GEN} -d ${OBJECTDIR}/ADC/adcselchconv.o 
 	@${FIXDEPS} "${OBJECTDIR}/ADC/adcselchconv.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
@@ -250,7 +230,6 @@ ${OBJECTDIR}/ADC/adcselchconv.o: ADC/adcselchconv.c  nbproject/Makefile-${CND_CO
 ${OBJECTDIR}/ADC/adcsetch.o: ADC/adcsetch.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR}/ADC 
 	@${RM} ${OBJECTDIR}/ADC/adcsetch.o.d 
-	@${RM} ${OBJECTDIR}/ADC/adcsetch.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE) -p$(MP_PROCESSOR_OPTION) -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/ADC/adcsetch.o   ADC/adcsetch.c 
 	@${DEP_GEN} -d ${OBJECTDIR}/ADC/adcsetch.o 
 	@${FIXDEPS} "${OBJECTDIR}/ADC/adcsetch.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
@@ -258,7 +237,6 @@ ${OBJECTDIR}/ADC/adcsetch.o: ADC/adcsetch.c  nbproject/Makefile-${CND_CONF}.mk
 ${OBJECTDIR}/AnalogHelper.o: AnalogHelper.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
 	@${RM} ${OBJECTDIR}/AnalogHelper.o.d 
-	@${RM} ${OBJECTDIR}/AnalogHelper.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE) -p$(MP_PROCESSOR_OPTION) -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/AnalogHelper.o   AnalogHelper.c 
 	@${DEP_GEN} -d ${OBJECTDIR}/AnalogHelper.o 
 	@${FIXDEPS} "${OBJECTDIR}/AnalogHelper.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 

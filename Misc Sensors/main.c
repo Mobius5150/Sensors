@@ -37,6 +37,15 @@ void main( void ) {
 
     ADC_Init();
 
+    // Setup Timer0
+    INTCONbits.TMR0IE = 1; // Enable the timer
+    INTCONbits.TMR0IF = 0; // Clear the flag
+    T0CON = 0b11000111; // 1:256 , 8 bits
+
+    // Enable interrupts and disable priorities
+    RCONbits.IPEN = 0;
+    INTCONbits.GIE = 1;
+
     // Check for CAN address collisions:
     while (J1939_Flags.WaitingForAddressClaimContention)
             J1939_Poll(5);
@@ -56,7 +65,7 @@ void main( void ) {
 
         //---- Acquire the cabin temperature: ------------------------------
         // Read from analog channel 1 (AN1)
-        result = ReadAnalog(2);
+        result = ReadAnalog(1);
 
         // Calibration: 22.6 deg. C = 163 (0.800V)
         //  500/1023 deg. C/ticks
@@ -87,11 +96,25 @@ void main( void ) {
         // Check if it is time to send data
         if( need_to_send_data == 1 ) {
             need_to_send_data = 0;
-            LATCbits.LATC1 = 1;     // Turn indicator LED on to signal sending
             Process_and_Send_Data(&Msg, Msg.Data[0]);
         }
     }
 }
+
+#pragma interrupt isr
+void isr(void) {
+    if (INTCONbits.TMR0IF) {
+        // Every timer overflow toggle the LED
+        need_to_send_data = 1;
+        INTCONbits.TMR0IF = 0;
+    }
+}
+
+#pragma code high_vector = 0x08
+void high_interrupt(void) {
+    _asm GOTO isr _endasm
+}
+#pragma code
 
 void Process_and_Send_Data(J1939_MESSAGE *MsgPtr, unsigned char DataType)
 {

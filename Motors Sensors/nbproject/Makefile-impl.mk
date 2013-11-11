@@ -24,7 +24,7 @@ CLEAN_SUBPROJECTS=${CLEAN_SUBPROJECTS_${SUBPROJECTS}}
 
 
 # Project Name
-PROJECTNAME=Slave Node - Motors Sensors
+PROJECTNAME=Motors Sensors
 
 # Active Configuration
 DEFAULTCONF=default
