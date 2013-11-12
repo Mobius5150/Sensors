@@ -6,6 +6,7 @@
                    projectFiles="true">
       <itemPath>J1939.H</itemPath>
       <itemPath>ecocar.h</itemPath>
+      <itemPath>AnalogHelper.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -17,13 +18,7 @@
       <itemPath>J1939.C</itemPath>
       <itemPath>main.c</itemPath>
       <itemPath>ecocar.c</itemPath>
-      <itemPath>ADC/adcbusy.c</itemPath>
-      <itemPath>ADC/adcclose.c</itemPath>
-      <itemPath>ADC/adcconv.c</itemPath>
-      <itemPath>ADC/adcopen.c</itemPath>
-      <itemPath>ADC/adcread.c</itemPath>
-      <itemPath>ADC/adcselchconv.c</itemPath>
-      <itemPath>ADC/adcsetch.c</itemPath>
+      <itemPath>AnalogHelper.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
