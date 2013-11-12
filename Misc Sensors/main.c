@@ -28,7 +28,8 @@ int sensorData[4][3] = {
 };
 
 void main( void ) {
-    long int result;
+    // Result has to be 32 bits to process the temperature calibrations
+    long long int result;
     long int corr;
     int j = 0;
 
@@ -66,26 +67,16 @@ void main( void ) {
         //---- Acquire the cabin temperature: ------------------------------
         // Read from analog channel 1 (AN1)
         result = ReadAnalog(1);
-
-        // Calibration: 22.6 deg. C = 163 (0.800V)
-        //  500/1023 deg. C/ticks
-        // Separate MSB and LSB:
-        corr = 30 + 22.6 + (result - 1660)*488/1024;
-        corr = 30 + 22.6 + corr/10;
-        sensorData[1][1] = (corr >> 8) & 0xFF;
-        sensorData[1][2] = corr & 0xFF;
+        result = (51319*result/1000) - 21854;
+        sensorData[1][1] = result >> 8;
+        sensorData[1][2] = result & 0xFF;
 
         //---- Acquire the outside temperature: ----------------------------
         // Select analog channel 0 (AN0)
         result = ReadAnalog(0);
-
-        // Calibration: 22.6 deg. C = 163 (0.800V)
-        //  500/1023 deg. C/ticks
-        // Separate MSB and LSB:
-        corr = 30 + 22.6 + (result - 1660)*488/1024;
-        corr = 30 + 22.6 + corr/10;
-        sensorData[0][1] = (corr >> 8) & 0xFF;
-        sensorData[0][2] = corr & 0xFF;
+        result = (51319*result/1000) - 21854;
+        sensorData[0][1] = (result >> 8);
+        sensorData[0][2] = result & 0xFF;
 
         //---- Acquire the auxillary battery voltage: ----------------------
         // Read from channel 3 (AN3)
