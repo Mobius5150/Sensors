@@ -15,10 +15,10 @@
 #pragma config WDT = OFF        // Watchdog Timer disabled (control is placed on the SWDTEN bit)
 
 J1939_MESSAGE Msg;
-void Process_and_Send_Data();
-void ADC_Init(void);
-
 volatile int need_to_send_data = 0;
+
+void Process_and_Send_Data(J1939_MESSAGE*, int);
+void ADC_Init(void);
 
 int sensorData[4][3] = {
     {DATA_TEMPOUTSIDE, 0x00, 0x00},
@@ -30,6 +30,7 @@ int sensorData[4][3] = {
 void main( void ) {
     long int result;
     long int corr;
+    int j = 0;
 
     InitEcoCar();
 
@@ -40,7 +41,7 @@ void main( void ) {
     // Setup Timer0
     INTCONbits.TMR0IE = 1; // Enable the timer
     INTCONbits.TMR0IF = 0; // Clear the flag
-    T0CON = 0b11000111; // 1:256 , 8 bits
+    T0CON = 0b10000101; // 1:64 , 16 bits
 
     // Enable interrupts and disable priorities
     RCONbits.IPEN = 0;
@@ -48,20 +49,19 @@ void main( void ) {
 
     // Check for CAN address collisions:
     while (J1939_Flags.WaitingForAddressClaimContention)
-            J1939_Poll(5);
+        J1939_Poll(5);
 
     while (1) {
-        // Listen in for a signal from the master wanting our data.
+        // This node currently does nothing with received messages
         J1939_Poll(10);
-        while (RXQueueCount > 0) {
+        while (RXQueueCount > 0)
             J1939_DequeueMessage( &Msg );
-        }
         
         //---- Aquire distance from backup sensor --------------------------
         // Read from analog channel 2 (AN2)
         result = ReadAnalog(2); // Convert to cm and take average (10x)
         sensorData[3][1] = (result>>8);        // DATAH
-        sensorData[3][2] = result & 0x0F;      // DATAL ((result<<8)>>8);
+        sensorData[3][2] = result & 0xFF;      // DATAL ((result<<8)>>8);
 
         //---- Acquire the cabin temperature: ------------------------------
         // Read from analog channel 1 (AN1)
@@ -70,9 +70,10 @@ void main( void ) {
         // Calibration: 22.6 deg. C = 163 (0.800V)
         //  500/1023 deg. C/ticks
         // Separate MSB and LSB:
-        sensorData[1][1] = 0;
-        corr = (result - 1660)*488/1024;
-        sensorData[1][2] = 30 + 22.6 + corr/10;
+        corr = 30 + 22.6 + (result - 1660)*488/1024;
+        corr = 30 + 22.6 + corr/10;
+        sensorData[1][1] = (corr >> 8) & 0xFF;
+        sensorData[1][2] = corr & 0xFF;
 
         //---- Acquire the outside temperature: ----------------------------
         // Select analog channel 0 (AN0)
@@ -81,22 +82,24 @@ void main( void ) {
         // Calibration: 22.6 deg. C = 163 (0.800V)
         //  500/1023 deg. C/ticks
         // Separate MSB and LSB:
-
-        sensorData[0][1] = 0;
-        corr = (result - 1660)*488/1024;
-        sensorData[0][2] = 30 + 22.6 + corr/10;
+        corr = 30 + 22.6 + (result - 1660)*488/1024;
+        corr = 30 + 22.6 + corr/10;
+        sensorData[0][1] = (corr >> 8) & 0xFF;
+        sensorData[0][2] = corr & 0xFF;
 
         //---- Acquire the auxillary battery voltage: ----------------------
         // Read from channel 3 (AN3)
-        result = ReadAnalog(3) * 10/47;
-        sensorData[2][1] = result >> 8;   // DATAH;
-        sensorData[2][2] = result & 0x0F; // DATAL;
+        result = ReadAnalog(3) * 4;
+        sensorData[2][1] = (result >> 8);   // DATAH;
+        sensorData[2][2] = result & 0xFF;  // DATAL;
         
-        
-        // Check if it is time to send data
+        // Check if its time to send the next data item
+        // Do this here rather than the ISR to make sure we've completed a full
+        // cycle of data collection
         if( need_to_send_data == 1 ) {
             need_to_send_data = 0;
-            Process_and_Send_Data();
+            Process_and_Send_Data( Msg, j );
+            j = ++j % 4;
         }
     }
 }
@@ -104,7 +107,7 @@ void main( void ) {
 #pragma interrupt isr
 void isr(void) {
     if (INTCONbits.TMR0IF) {
-        // Every timer overflow toggle the LED
+        // Every timer overflow mark that we should send data
         need_to_send_data = 1;
         INTCONbits.TMR0IF = 0;
     }
@@ -116,18 +119,11 @@ void high_interrupt(void) {
 }
 #pragma code
 
-void Process_and_Send_Data()
-{
-    int i;
-
-    for(i=0;i<(sizeof(sensorData)/sizeof(sensorData[0]));i++) {
-            // Broadcast the data:
-            char data[8];
-            data[0] = sensorData[i][1]; // MSB
-            data[1] = sensorData[i][2]; // LSB
-            Broadcast_Data(sensorData[i][0], data);
-            Delay10KTCYx(1000);
-    }
+void Process_and_Send_Data(J1939_MESSAGE *MsgPtr, int i) {
+    char data[8];
+    data[0] = sensorData[i][1]; // MSB
+    data[1] = sensorData[i][2]; // LSB
+    Broadcast_Data(MsgPtr, sensorData[i][0], data);
 }
 
 void ADC_Init()
