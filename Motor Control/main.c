@@ -22,12 +22,17 @@
 #pragma config BOREN = OFF      // Brown-out Reset disabled in hardware and software
 #pragma config WDT = OFF        // Watchdog Timer disabled (control is placed on the SWDTEN bit)
 
-unsigned long int    Pedal = 0x0000;
-unsigned long int    MPedal = 0x0000;
-unsigned char   Cruise = 0;
-unsigned char   Set = 0;
+unsigned long int Pedal = 0x0000;
+unsigned long int MPedal = 0x0000;
+unsigned char     Set = 0;
 
+void set_cruise(int new_value);
+typedef enum cruise {
+    CRUISE_OFF = 0,
+    CRUISE_ON = 1
+} cruise_t;
 
+cruise_t Cruise = CRUISE_OFF;
 
 void main(void) {
 
@@ -45,28 +50,27 @@ void main(void) {
     OpenPWM1(0xFF);                 //Turn on PWM capabilities
 
     while(1){
-        if(Cruise == 0){
+        if(Cruise == CRUISE_OFF){
             ConvertADC();           //Read from ADC
             while(BusyADC());       //Wait for ADC to finish conversion
             Pedal = ReadADC();      //Read the ADC result
         }
         
         if(PORTBbits.RB0 == 1){
-            Cruise = 0;
-            LATCbits.LATC3 = 0;
+            // Turn cruise control off
+            set_cruise( CRUISE_OFF );
         }
 
+        // Wait while the cruise button is depressed
         while(PORTBbits.RB1 == 1){
             Set = 1;
         }
-        if(Set == 1 && Cruise == 0){
-            Cruise = 1;
-            LATCbits.LATC3 = 1;
+
+        if(Set == 1 && Cruise == CRUISE_OFF){
+            set_cruise( CRUISE_ON );
             Set = 0;
-        }
-        else if (Set == 1 && Cruise == 1){
-            Cruise = 0;
-            LATCbits.LATC3 = 0;
+        } else if (Set == 1 && Cruise == CRUISE_ON){
+            set_cruise( CRUISE_OFF );
             Set = 0;
         }
 
@@ -75,3 +79,7 @@ void main(void) {
     }
 }
 
+void set_cruise( cruise_t new_value ) {
+    Cruise = new_value == CRUISE_ON;
+    LATCbits.LATC3 = new_value == CRUISE_ON;
+}
