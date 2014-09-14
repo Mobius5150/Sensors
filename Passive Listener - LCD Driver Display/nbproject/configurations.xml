@@ -65,6 +65,7 @@
       <C18LanguageToolchain>
       </C18LanguageToolchain>
       <PICkit3PlatformTool>
+        <property key="firmware.download.all" value="false"/>
       </PICkit3PlatformTool>
     </conf>
   </confs>

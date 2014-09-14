@@ -45,17 +45,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=J1939.C main.c ecocar.c AnalogHelper.c
+SOURCEFILES_QUOTED_IF_SPACED=J1939.C ecocar.c AnalogHelper.c main.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/J1939.o ${OBJECTDIR}/main.o ${OBJECTDIR}/ecocar.o ${OBJECTDIR}/AnalogHelper.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/J1939.o.d ${OBJECTDIR}/main.o.d ${OBJECTDIR}/ecocar.o.d ${OBJECTDIR}/AnalogHelper.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/J1939.o ${OBJECTDIR}/ecocar.o ${OBJECTDIR}/AnalogHelper.o ${OBJECTDIR}/main.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/J1939.o.d ${OBJECTDIR}/ecocar.o.d ${OBJECTDIR}/AnalogHelper.o.d ${OBJECTDIR}/main.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/J1939.o ${OBJECTDIR}/main.o ${OBJECTDIR}/ecocar.o ${OBJECTDIR}/AnalogHelper.o
+OBJECTFILES=${OBJECTDIR}/J1939.o ${OBJECTDIR}/ecocar.o ${OBJECTDIR}/AnalogHelper.o ${OBJECTDIR}/main.o
 
 # Source Files
-SOURCEFILES=J1939.C main.c ecocar.c AnalogHelper.c
+SOURCEFILES=J1939.C ecocar.c AnalogHelper.c main.c
 
 
 CFLAGS=
@@ -93,13 +93,6 @@ ${OBJECTDIR}/J1939.o: J1939.C  nbproject/Makefile-${CND_CONF}.mk
 	@${DEP_GEN} -d ${OBJECTDIR}/J1939.o 
 	@${FIXDEPS} "${OBJECTDIR}/J1939.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
 	
-${OBJECTDIR}/main.o: main.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR} 
-	@${RM} ${OBJECTDIR}/main.o.d 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1 -p$(MP_PROCESSOR_OPTION) -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/main.o   main.c 
-	@${DEP_GEN} -d ${OBJECTDIR}/main.o 
-	@${FIXDEPS} "${OBJECTDIR}/main.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
-	
 ${OBJECTDIR}/ecocar.o: ecocar.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
 	@${RM} ${OBJECTDIR}/ecocar.o.d 
@@ -114,6 +107,13 @@ ${OBJECTDIR}/AnalogHelper.o: AnalogHelper.c  nbproject/Makefile-${CND_CONF}.mk
 	@${DEP_GEN} -d ${OBJECTDIR}/AnalogHelper.o 
 	@${FIXDEPS} "${OBJECTDIR}/AnalogHelper.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
 	
+${OBJECTDIR}/main.o: main.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/main.o.d 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1 -p$(MP_PROCESSOR_OPTION) -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/main.o   main.c 
+	@${DEP_GEN} -d ${OBJECTDIR}/main.o 
+	@${FIXDEPS} "${OBJECTDIR}/main.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
+	
 else
 ${OBJECTDIR}/J1939.o: J1939.C  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
@@ -121,13 +121,6 @@ ${OBJECTDIR}/J1939.o: J1939.C  nbproject/Makefile-${CND_CONF}.mk
 	${MP_CC} $(MP_EXTRA_CC_PRE) -p$(MP_PROCESSOR_OPTION) -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/J1939.o   J1939.C 
 	@${DEP_GEN} -d ${OBJECTDIR}/J1939.o 
 	@${FIXDEPS} "${OBJECTDIR}/J1939.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
-	
-${OBJECTDIR}/main.o: main.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR} 
-	@${RM} ${OBJECTDIR}/main.o.d 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -p$(MP_PROCESSOR_OPTION) -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/main.o   main.c 
-	@${DEP_GEN} -d ${OBJECTDIR}/main.o 
-	@${FIXDEPS} "${OBJECTDIR}/main.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
 	
 ${OBJECTDIR}/ecocar.o: ecocar.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
@@ -142,6 +135,13 @@ ${OBJECTDIR}/AnalogHelper.o: AnalogHelper.c  nbproject/Makefile-${CND_CONF}.mk
 	${MP_CC} $(MP_EXTRA_CC_PRE) -p$(MP_PROCESSOR_OPTION) -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/AnalogHelper.o   AnalogHelper.c 
 	@${DEP_GEN} -d ${OBJECTDIR}/AnalogHelper.o 
 	@${FIXDEPS} "${OBJECTDIR}/AnalogHelper.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
+	
+${OBJECTDIR}/main.o: main.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/main.o.d 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -p$(MP_PROCESSOR_OPTION) -ms -oa-  -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/main.o   main.c 
+	@${DEP_GEN} -d ${OBJECTDIR}/main.o 
+	@${FIXDEPS} "${OBJECTDIR}/main.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
 	
 endif
 

@@ -1,23 +1,101 @@
-`/*
-* CAN Bus - Fuel Cell Slave Node
-* Based on CAN Bus Demo B
-*/
+/*
+ * File:   purgeCodeV2-5.c
+ * Author: sdamkjar@ualberta.ca
+ *
+ * Created on MARCH 28, 2014, 12:39 PM
+ *
+ * Version Notes: This working code uses Timer0 and outputs a periodic 5V signal
+] *                to pin 4 on the PIC18F2685. Timing can be configured in the
+ *                preamble below. Subsequent versions should use Timer1.
+ */
 
+////////////////////////////////////////////////////////////////////////////////
+/////////////////////////// TIMING CONFIGURATION ///////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+/* Enter the timing intervals here in milliseconds. For each cycle, the purge
+ * valve will remain closed for WAIT milliseconds and then open for PURGE
+ * milliseconds. Note that the minimum allowed interval is 20ms */
+#define WAITtime 20000 /*ms (originally 1s)*/
+#define PURGEtime 50 /*ms (originally 0.1s)*/
+#define SENDtime 105   /*ms*/
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////// SOME THINGS TO CONSIDER ////////////////////////////////
+
+/* Documentation for the PIC18F2685 is located on the Google drive at:
+ *   "C:\Users\sdamkjar\Google Drive\EcoCar\EE Team\Sensors\Device Documentation
+ *       \IC Documentation"
+ */
+
+/* Always (especially if you have multiple projects) define the project you want
+ * to compile by right-clicking that project and selecting "Set as Main Project"
+ */
+
+/* Unless you are using an external power supply to power the PIC while you
+ * program it, you can set the PICKIT3 to power the PIC from your computer.
+ *      To do this: Right-click your project and select "Properties"
+ *         Under "Conf: [default]" in "Categories" select "PICkit3"
+ *         Select "Power" from the "Option Categories" drop-down menu at the top
+ *         Enable "Power target circuit from PICkit3"
+ *         **** Make sure to select your voltage (usually 5V) from the
+ *              "Voltage Level" drop down menu.
+ */
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////// INPUT/OUPUT CONFIGURATION NOTES /////////////////////////
+
+// Look at the pin diagram on page 4 of PIC18F2685 Documentation.pdf
+
+/*  The input and output of the PIC is controlled by the following registers
+
+ ** TRISA ( Data Direction Register )
+ *    ( high or '1' for input and low or '0' for output )
+ *    Example: To configure port RA0 as an output, use "TRISAbits.RA0 = 0;"
+
+ ** LATA  => Latch Register
+ *    ( used for sending or "latching" OUTPUT )
+ *    Example: To set port RA0, use "LATAbits.LATA0 = 1;"
+
+ ** PORTA => Port Register
+ *    ( used for reading INPUT )
+ *
+
+ */
+////////////////////////////////////////////////////////////////////////////////
+
+///////////// INCLUDE THIS PREAMBLE IN EVERY PROJECT ///////////////////////////
+#include <stdio.h>
+#include <stdlib.h>
+
+/* This header file includes important functions we need for the PIC18F2685 */
 #include <p18cxxx.h>
+
+/* precompiler directive configures the oscillator which is, whose factory
+ * default frequency is 8 MHz */
+#pragma config OSC = IRCIO67
+
+/* Disable "watch-dog-timer". If enabled, the watch-dog timer needs to be reset
+ * periodically otherwise the PIC will reset  */
+#pragma config WDT = OFF
+////////////////////////////////////////////////////////////////////////////////
+
+/* If you want to use some timing, we need this header. Keep in mind that the
+ * PIC sees time in numbers of clock cycles*/
+#include <delays.h>
+
+/* These are just to make the timing code (in the ISR) more readable. */
+#define WAIT 0
+#define PURGE 1
+
+
 #include "J1939.h"
 #include "ecocar.h"
 #include <usart.h>
-#include <delays.h>
-#include <stdio.h>
 #include <adc.h>    // Analog
-#include <stdlib.h> // Analog
 
-#pragma config OSC = IRCIO67    // Oscillator Selection Bit
 #pragma config BOREN = OFF      // Brown-out Reset disabled in hardware and software
-#pragma config WDT = OFF        // Watchdog Timer disabled (control is placed on the SWDTEN bit)
 
-J1939_MESSAGE Msg;
-void Process_and_Send_Data(J1939_MESSAGE *MsgPtr, unsigned char DataType);
 void Recv_FuelCell(void);
 void ParseSerial(void);
 void ADC_Init(void);
@@ -30,36 +108,78 @@ char buffer[16];
 char parsedBuffer[8] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 
 char MsgData[];
-int need_to_ack = 0;
-int times_recv = 0;
+
+J1939_MESSAGE Msg;
+volatile int need_to_send_data = 0;
 const unsigned long int cyclesMax = 500000;
 
-int sensorData[8][3] =
-    {{DATA_FC_POWER, 0x00, 0x00},
+void Process_and_Send_Data(J1939_MESSAGE*, int);
+
+#define DATA_LEN 8
+int sensorLatestData[DATA_LEN][DATA_ITEM_LENGTH] = {
+    {DATA_FC_POWER, 0x00, 0x00},
     {DATA_FC_TEMP, 0x00, 0x00},
     {DATA_TEMPTRUNK, 0x00, 0x00},
     {DATA_FC_CURR, 0x00, 0x00},
     {DATA_FC_VSTACK, 0x00, 0x00},
     {DATA_FC_VBATT, 0x00, 0x00},
     {DATA_FC_PTANK, 0x00, 0x00},
-    {DATA_FC_STATUS, 0x00, 0x00}};
+    {DATA_FC_STATUS, 0x00, 0x00}
+};
+
+int sensorLastSentData[DATA_LEN][DATA_ITEM_LENGTH] = {
+    {DATA_FC_POWER, 0x00, 0x00},
+    {DATA_FC_TEMP, 0x00, 0x00},
+    {DATA_TEMPTRUNK, 0x00, 0x00},
+    {DATA_FC_CURR, 0x00, 0x00},
+    {DATA_FC_VSTACK, 0x00, 0x00},
+    {DATA_FC_VBATT, 0x00, 0x00},
+    {DATA_FC_PTANK, 0x00, 0x00},
+    {DATA_FC_STATUS, 0x00, 0x00}
+};
 
 
+/* The main function should always be 'void'.
+ *** Make sure there is no return statement! */
 void main( void )
 {
-    int i; long int result;
-    char TimeoutData[8];
-    unsigned long int cycleCounter;
-    
-    
-    char DATAH = 0x00;
-    char DATAL = 0x00;
+    long long int result;
+    int i = 0;
+    int first_run = 1;
+    int times_recv = 0;
 
     InitEcoCar();
     
+    /* This line configures the RA0 port (pin 2 on the PIC) as an output pin.
+     * This will control the purge valve. */
+    TRISAbits.RA2 = 0;
+    /* This ensures the purge valve is closed while the program initializes */
+    LATAbits.LATA2 = 0;
+
+    /* Disables the TIMER0 FLAG ( this is enabled at the start of the INTERRUPT
+     * SERVICE ROUTINE and disabled at the end ) */
+    INTCONbits.TMR0IF = 0;
+
+    /* Enables the interrupt for TIMER0 overflow.*/
+    INTCONbits.TMR0IE = 1;
+
+    /* This is the TIMER0 CONTROL REGISTER
+    * (Page 149 of PIC18F2685 Documentation.pdf defines each bit)
+    * Here, we are using an 8-bit, internal, rising edge timer with 1:256
+    * prescaling (this counts once every 256 clock cycles)
+    */
+    T0CON = 0b11000100;
+
+    /* This disables interrupt priority */
+    RCONbits.IPEN = 0;
+
+    /* Setting this register to 1 allows interrupts. Otherwise, all interrupts
+     * will be disabled */
+    INTCONbits.GIE = 1;
+    
     J1939_Initialization( TRUE );
 
-    ADC_Init();
+//    ADC_Init();
 
     // Open USART:
     OpenUSART( USART_TX_INT_OFF &
@@ -68,7 +188,7 @@ void main( void )
     USART_EIGHT_BIT &
     USART_CONT_RX &
     USART_BRGH_HIGH, 207 );
-    
+
     // 207 = 9600 bps at 32 MHz
     BAUDCONbits.BRG16 = 0;  // Disable 16-bit SPBRG (low speed!)
 
@@ -78,163 +198,172 @@ void main( void )
     while (J1939_Flags.WaitingForAddressClaimContention)
             J1939_Poll(5);
 
-    while (1)
-    {
-        LATCbits.LATC1 = 0;     // Turn indicator LED off
-        LATCbits.LATC0 = 1;     // Turn indicator LED on
+    /* This prevents the program from reaching the end of the main function */
+    while (1) {
+        J1939_Poll(5);
         
-        // Listen in for a signal from the master wanting our data.
-        J1939_Poll(10);
-        while (RXQueueCount > 0)
-        {
-            J1939_DequeueMessage( &Msg );
-            if(Msg.PDUFormat == PDU_BROADCAST && Msg.GroupExtension == CYCLE_COMPLETE)
-            {
-                need_to_ack = 1;
-            }
-            else if(Msg.PDUFormat == PDU_REQUEST && Msg.SourceAddress == NODE_MASTER)
-            {
-                // Broadcast the data as ordered by the master:
-                LATCbits.LATC1 = 1;     // Turn indicator LED on to signal end of cycle
-                if(Msg.Data[0] == DATA_FC_CURR)
-                {
-                    times_recv++;
-                }
+        // Broadcast the data as ordered by the master:
+        if ( SerialListen() ) {
+            ParseSerial();
+            StoreSerial();
+        }
 
-                Process_and_Send_Data(&Msg, Msg.Data[0]);
-
-                if(times_recv > 3)
-                {
-                        // Acquire some serial data.
-                        cycleCounter = SerialListen();
-                        if(cycleCounter <= cyclesMax)
-                        {
-                            ParseSerial();
-                            StoreSerial();
-                        }else{
-                            ClearSerial();
-                        }
-                        times_recv = 0;
-                }
+        result = (sensorLatestData[3][1] << 8) | sensorLatestData[3][2];
+        if ( need_to_send_data ) {
+            result += 100;
+            if ( result > 30000 ) {
+                result = 0;
             }
         }
 
-        if(need_to_ack == 1)
-        {
-            need_to_ack = 0;
-            
-            //cycleCounter = SerialListen();
+        sensorLatestData[3][1] = (result >> 8) & 0xFF;
+        sensorLatestData[3][2] = result & 0xFF;
 
-            //if(cycleCounter <= cyclesMax)
-            //{
-                // No timeouts encountered. Continue:
-                
-                // The data from the fuel cell is outputted in a continuous
-                // sequence. By listening for special "anchor" bytes, we can
-                // sort out which bytes belong to which sensor.
+        if( need_to_send_data == 1 ) {
+            need_to_send_data = 0;
+            for (; i < DATA_LEN; ++i ) {
+                if ( NeedToSendData( sensorLastSentData, sensorLatestData, i ) || first_run ) {
+                    Process_and_Send_Data( &Msg, i );
+                    J1939_Poll(10);
+                }
+            }
 
-                //ParseSerial();
-
-                // parsedBuffer now contains the sorted data (8 bytes).
-
-                /* First byte = Fuel Cell Status:
-                0 - NORMAL
-                1 - BATTERY LOW
-                2 - FC VOLTAGE LOW
-                3 - H2 HIGH
-                4 - CURRENT HIGH
-                5 - TEMPERATURE HIGH
-                20 - MANUAL TURN OFF
-                */
-                //StoreSerial();
-                //cycleCounter = 0;
-            //}else{
-            //    ClearSerial(); // Fuel cell shut off.
-            //}
-
-            // Collect pressure sensor data:
-            ConvertADC();           //Read from ADC
-            while(BusyADC());       //Wait for ADC to finish conversion
-            result = ReadADC();     // Read result
-
-            // TODO: Apply scale factor to convert voltage to pressure.
-            
-            // Separate MSB and LSB:
-            DATAH = (result>>8);    // Separate low and high bits
-            DATAL = ((result<<8)>>8);
-            
-            sensorData[6][1] = DATAH;
-            sensorData[6][2] = DATAL;
-
-            Broadcast_Data(&Msg, ACK_DONE, MsgData);
+            if ( DATA_LEN == i ) {
+//                first_run = 0;
+                i = 0;
+            }
         }
-        
     }
 }
 
-void ADC_Init()
-{
-   // Analog initialization for Fuel Cell
-   // We will be reading the pressure from AN0, so we
-    ADRESH = 0x00;              //Set the ADC variables to 0x00 initially
-    ADRESL = 0x00;
+//////////////////THIS IS OUR INTERRUPT SERVICE ROUTINE/////////////////////////
+/* SOME THINGS TO KEEP IN MIND :
+    Comments on the same line as the pragma statements here can cause problems*/
+#pragma interrupt isr
+void isr(void){
 
+    /* With 1:1 prescaling, this will increment every 4 milliseconds. With a
+     * LONG variable, this should be able to except a maximum interval of
+     * roughly 100 days (this is probably excessive but the next smallest data
+     * type (UNSIGNED INT) would have a maximum interval of only 4 minutes). */
+    static long counter = 0;
+    static long data_counter = 0;
 
-    ADCON0bits.ADON = 0; // Disable A/D module
-    ADCON0bits.CHS0 = 0; // Select channel 0 (AN0)
-    ADCON0bits.CHS1 = 0;
-    ADCON0bits.CHS2 = 0;
-    ADCON0bits.CHS3 = 0;
-    ADCON1bits.VCFG1 = 0; // Use VSS for Vref- source
-    ADCON1bits.VCFG0 = 0; // Use VDD for Vref+ source
+    /* This is used to toggle interval duration. */
+    static int mode = WAIT;
 
-    ADCON1bits.PCFG0 = 0; // Make AN0 pin analog and all others digital
-    ADCON1bits.PCFG1 = 1;
-    ADCON1bits.PCFG2 = 1;
-    ADCON1bits.PCFG3 = 1;
-    ADCON2bits.ADFM = 1; // A/D result is right justified
+    /* The code should get here ever 4 milliseconds */
+    if ( INTCONbits.TMR0IF ) {
 
-    ADCON2bits.ACQT0 = 1; // Acquisition time
-    ADCON2bits.ACQT1 = 0;
-    ADCON2bits.ACQT2 = 0;
+	/* Increment the counter */
+	counter++;
+        data_counter++;
 
-    ADCON2bits.ADCS0 = 0; // A/D conversion clock
-    ADCON2bits.ADCS1 = 1;
-    ADCON2bits.ADCS2 = 1;
-    TRISAbits.TRISA0 = 1; // input
-    ADCON0bits.ADON = 1; // Enable A/D module
+	/* If the purge valve is closed and the timer finishes the WAIT
+	 * interval then open the valve, reset the timer, and switch to PURGE
+	 * mode. The interval is in milliseconds or 1/4 timer cycles. */
+	if (mode == WAIT && counter > WAITtime) {
+            /* Open the purge valve */
+            LATAbits.LATA2 = 1;
+            /* Reset the timer */
+            counter = 0;
+            /* Switch to PURGE mode */
+            mode = PURGE;
+	}
 
-    Delay10TCYx(5);             //Delay while the ADC is activated
+	/* If the purge valve is closed and the timer finishes the PURGE
+	 * interval then open the valve, reset the timer, and switch to WAIT
+	 * mode. The interval is in milliseconds or 1/4 timer cycles.*/
+	else if (mode == PURGE && counter > PURGEtime) {
+            /* Close the purge valve */
+            LATAbits.LATA2 = 0;
+            /* Reset the timer */
+            counter = 0;
+            /* Switch to WAIT mode */
+            mode = WAIT;
+        }
+
+        if ( data_counter > SENDtime ) {
+            data_counter = 0;
+            need_to_send_data = 1;
+        }
+
+	/* This resets the TIMER1 interrupt flag to get ready for next time*/
+        INTCONbits.TMR0IF = 0;
+
+    }
 }
 
-void Process_and_Send_Data(J1939_MESSAGE *MsgPtr, unsigned char DataType)
-{
-    char SensorData[8];
-    int i;
+//////////////////THIS IS OUR INTERRUPT/////////////////////////
+// This calls the interrupt service routine when the interrupt is called
+#pragma code high_vector = 0x08
 
-    for(i=0;i<sizeof(sensorData)/sizeof(sensorData[0]);i++)
-    {
-        if(DataType == sensorData[i][0])
-        {
-            // Broadcast the data:
-            char data[8];
-            data[0] = sensorData[i][1]; // MSB
-            data[1] = sensorData[i][2]; // LSB
-            Broadcast_Data(MsgPtr, DataType, data);
-        }
-    }
+/* this 'function' can only be 8 bytes in length. This is why the code we want
+ * to run with our interrupt will be put in the interrupt service routine   */
+void high_interrupt(void){
+
+    /* This is an assembly instruction. This efficiently calls our interrupt
+     * service routine */
+    _asm GOTO isr _endasm
+}
+
+/* There is actually a space at the end of this line and a line break after...
+ * This is important for some strange reason */
+#pragma code
+
+//
+//void ADC_Init()
+//{
+//   // Analog initialization for Fuel Cell
+//   // We will be reading the pressure from AN0, so we
+//    ADRESH = 0x00;              //Set the ADC variables to 0x00 initially
+//    ADRESL = 0x00;
+//
+//
+//    ADCON0bits.ADON = 0; // Disable A/D module
+//    ADCON0bits.CHS0 = 0; // Select channel 0 (AN0)
+//    ADCON0bits.CHS1 = 0;
+//    ADCON0bits.CHS2 = 0;
+//    ADCON0bits.CHS3 = 0;
+//    ADCON1bits.VCFG1 = 0; // Use VSS for Vref- source
+//    ADCON1bits.VCFG0 = 0; // Use VDD for Vref+ source
+//
+//    ADCON1bits.PCFG0 = 0; // Make AN0 pin analog and all others digital
+//    ADCON1bits.PCFG1 = 1;
+//    ADCON1bits.PCFG2 = 1;
+//    ADCON1bits.PCFG3 = 1;
+//    ADCON2bits.ADFM = 1; // A/D result is right justified
+//
+//    ADCON2bits.ACQT0 = 1; // Acquisition time
+//    ADCON2bits.ACQT1 = 0;
+//    ADCON2bits.ACQT2 = 0;
+//
+//    ADCON2bits.ADCS0 = 0; // A/D conversion clock
+//    ADCON2bits.ADCS1 = 1;
+//    ADCON2bits.ADCS2 = 1;
+//    TRISAbits.TRISA0 = 1; // input
+//    ADCON0bits.ADON = 1; // Enable A/D module
+//
+//    Delay10TCYx(5);             //Delay while the ADC is activated
+//}
+//
+void Process_and_Send_Data(J1939_MESSAGE *MsgPtr, int i) {
+    char data[8];
+    data[1] = sensorLatestData[i][1]; // MSB
+    data[0] = sensorLatestData[i][2]; // LSB
+    Broadcast_Data(MsgPtr, sensorLatestData[i][0], data);
 }
 
 void ParseSerial()
 {
     // This function processes the serial data stream coming from the
     // fuel cell.
-    
+
     int i; int j;
 
     // To extract the correct 8 bytes, we look at a 16-byte stream for
     // special "anchor" bytes (0x00) in the 4th and 6th positions.
-   
+
     // Examine the 16-byte array for the anchor bits (0x00):
     for(i=3;i<=11;i++)
     {
@@ -254,79 +383,85 @@ void ParseSerial()
 
 void StoreSerial()
 {
-                sensorData[7][1] = 0x00;
-                sensorData[7][2] = parsedBuffer[0];
+    long int result = 0;
+    sensorLatestData[7][1] = 0x00;
+    sensorLatestData[7][2] = parsedBuffer[0];
 
-                if (sensorData[7][2] == 20)
-                {
-                    sensorData[0][1] = 0x00;
-                    sensorData[0][2] = 0x00;
-                }
-                else
-                {
-                    sensorData[0][1] = 0xFF;
-                    sensorData[0][2] = 0xFF;
-                }
+    if (sensorLatestData[7][2] == 20)
+    {
+        sensorLatestData[0][1] = 0x00;
+        sensorLatestData[0][2] = 0x00;
+    }
+    else
+    {
+        sensorLatestData[0][1] = 0xFF;
+        sensorLatestData[0][2] = 0xFF;
+    }
 
-                // Second Byte = Ambient Temperture, 2x value
-                sensorData[2][1] = 0x00;
-                sensorData[2][2] = parsedBuffer[1];
+    // Second Byte = Ambient Temperture, 2x value
+    result = parsedBuffer[1] * 500;
+    sensorLatestData[2][1] = ( result >> 8 );
+    sensorLatestData[2][2] = result & 0xFF;
 
-                // Third Byte = Stack Voltage, 3x value
-                sensorData[4][1] = 0x00;
-                sensorData[4][2] = parsedBuffer[2];
+    // Third Byte = Stack Voltage, 3x value
+    result = ( parsedBuffer[2] / 3 ) * 1000;
+    sensorLatestData[4][1] = ( result >> 8 );
+    sensorLatestData[4][2] = result & 0xFF;
 
-                // Fourth Byte = H2 Voltage, no value (0x00, used as anchor)
+    // Fourth Byte = H2 Voltage, no value (0x00, used as anchor)
 
-                // Fifth Byte = Stack Temperature, 2x value
-                sensorData[1][1] = 0x00;
-                sensorData[1][2] = parsedBuffer[4];
+    // Fifth Byte = Stack Temperature, 2x value
+    result = parsedBuffer[1] * 500;
+    sensorLatestData[1][1] = ( result >> 8 );
+    sensorLatestData[1][2] = result & 0xFF;
 
-                // Sixth & Seventh Bytes = Stack Current, 5x value
-                // The MSB of the stack current should always be 0x00, and
-                // is used a the second anchor byte.
-                sensorData[3][1] = parsedBuffer[5];
-                sensorData[3][2] = parsedBuffer[6];
+    // Sixth & Seventh Bytes = Stack Current, 5x value
+    // The MSB of the stack current should always be 0x00, and
+    // is used a the second anchor byte.
+    result = ( (parsedBuffer[6])) * 200; // 200 = 1000/5
+    sensorLatestData[3][1] = ( result >> 8 );
+    sensorLatestData[3][2] = result & 0xFF;
 
-                // Eighth Byte = Battery Voltage, 10x value
-                sensorData[5][1] = 0x00;
-                sensorData[5][2] = parsedBuffer[7];
+    // Eighth Byte = Battery Voltage, 10x value
+    result = parsedBuffer[7] * 100;
+    sensorLatestData[5][1] = ( result >> 8 );
+    sensorLatestData[5][2] = result & 0xFF;
 
 }
 void ClearSerial()
 {
+    // Fuel cell is probably off, since we're getting timeouts.
+    // Clear in-memory values.
 
-                // Fuel cell is probably off, since we're getting timeouts.
-                // Clear in-memory values.
+    sensorLatestData[0][1] = 0x00;
+    sensorLatestData[0][2] = 0x00;
 
-                sensorData[0][1] = 0x00;
-                sensorData[0][2] = 0x00;
+    sensorLatestData[7][1] = 0x00;
+    sensorLatestData[7][2] = 20;  // Assume manual turn off?
 
-                sensorData[7][1] = 0x00;
-                sensorData[7][2] = 20;  // Assume manual turn off?
+    sensorLatestData[2][1] = 0x00;
+    sensorLatestData[2][2] = 0x00;
 
-                sensorData[2][1] = 0x00;
-                sensorData[2][2] = 0x00;
+    sensorLatestData[4][1] = 0x00;
+    sensorLatestData[4][2] = 0x00;
 
-                sensorData[4][1] = 0x00;
-                sensorData[4][2] = 0x00;
+    sensorLatestData[1][1] = 0x00;
+    sensorLatestData[1][2] = 0x00;
 
-                sensorData[1][1] = 0x00;
-                sensorData[1][2] = 0x00;
+    sensorLatestData[3][1] = 0x00;
+    sensorLatestData[3][2] = 0x00;
 
-                sensorData[3][1] = 0x00;
-                sensorData[3][2] = 0x00;
+    sensorLatestData[5][1] = 0x00;
+    sensorLatestData[5][2] = 0x00;
 
-                sensorData[5][1] = 0x00;
-                sensorData[5][2] = 0x00;
-            
 }
+
 long int SerialListen()
 {
     int i;
     unsigned long int cycleCounter;
-    
-                // Clear errors if they exist.
+
+            // Clear errors if they exist.
             if (RCSTAbits.OERR || RCSTAbits.FERR)
             {
                 RCSTAbits.CREN = 0; /* clear any errors */
@@ -348,6 +483,6 @@ long int SerialListen()
                 buffer[i] = ReadUSART();
                 buffer[i+8] = buffer[i];
             }
-    
+
     return cycleCounter;
 }

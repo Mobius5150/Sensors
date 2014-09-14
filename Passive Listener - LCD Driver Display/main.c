@@ -49,7 +49,10 @@ void main( void )
     InitEcoCar();
 
     TRISCbits.TRISC1 = 1;   // Listen on this pin for LCD
-    
+
+    RCSTAbits.SPEN = 1;
+    TRISCbits.RC4 = 0;
+
     J1939_Initialization( TRUE );
 
     // Open USART:
@@ -59,7 +62,7 @@ void main( void )
     USART_EIGHT_BIT &
     USART_CONT_RX &
     USART_BRGH_HIGH, 34 );
-    
+
     // 34 = 57,600 bps at 32 MHz
     BAUDCONbits.BRG16 = 0;  // Enable 16-bit SPBRG (high speed!)
 
@@ -70,83 +73,26 @@ void main( void )
             J1939_Poll(5);
 
     LATCbits.LATC0 = 1;     // PICIN to LCD
+    TRISCbits.RC4 = 0;
 
     while (1)
     {
-       
-        // Listen in for a signal from the master wanting our data.
         J1939_Poll(10);
         while (RXQueueCount > 0)
         {
+            LATCbits.LATC4 = 1;
             J1939_DequeueMessage( &Msg );
-            if (Msg.PDUFormat == PDU_BROADCAST && Msg.GroupExtension != CYCLE_COMPLETE && NEW_CYCLE == 1)
-            {
-                // Store data broadcasted by slaves
-                // MSB = Msg.Data[0], DataList[i][1]
-                // LSB = Msg.Data[1], DataList[i][2]
-                for(i=0;i<(sizeof(DataList)/sizeof(DataList[0]));i++)
-                {
-                    if(DataList[i][0] == ERR_TIMEOUT && TimeoutLog == 0x00)
-                    {
-                        // Clear the timeout info that is currently stored in memory.
-                        DataList[i][1] = 0x00;
-                        DataList[i][2] = 0x00;
-                    }
-                           
-                    if (Msg.GroupExtension == DataList[i][0])
-                    {
-                        // Handle timeout logging:
-                        if(Msg.GroupExtension == ERR_TIMEOUT)
-                        {
-                            TimeoutLog = Msg.Data[0];   // Set timeout log to current failing node.
-                        }
-                        else if(Msg.GroupExtension == TimeoutLog)
-                        {
-                            TimeoutLog = 0x00;  // Obviously, the node is responding now.
-                        }
-
-                        DataList[i][1] = Msg.Data[0];
-                        DataList[i][2] = Msg.Data[1];
-                        
-                    }
-                }
-            }
-            else if (Msg.PDUFormat == PDU_BROADCAST && Msg.GroupExtension == CYCLE_COMPLETE && NEW_CYCLE == 1)
-            {
-                // Master is finished asking for data, send data now
-		// Transmit slave data
-
-                NEW_CYCLE = 0;                  // Reset cycle flag
-                LATCbits.LATC0 = 1;     // Signal to LCD to start listening.
-
-                for(i=0;i<sizeof(DataList)/sizeof(DataList[0]);i++)
-                {
-                    while(PORTCbits.RC1 == 0){ Nop(); };  // Wait until LCD is ready to receive serial data.
-                    putSerialData(DataList[i][0], DataList[i][1], DataList[i][2]);
-
-                    // Wait while LCD turns listening off and checks for screen events.
-                    counter = 0;
-                    while(PORTCbits.RC1 == 1)
-                    {
-                        counter++;
-                        if(counter > 50000)
-                        { 
-                            LATCbits.LATC4 = 1;     // Turn timeout error LED on.
-                            counter = 0;
-                            break;
-                        }
-                    }
-
-                }
-
-                LATCbits.LATC0 = 0;     // Signal to LCD to stop listening.
-            }
-
-            else if (Msg.PDUFormat == PDU_BROADCAST && Msg.GroupExtension == CYCLE_COMPLETE)
-            {
-                NEW_CYCLE = 1;   // Receiving data from beginning of cycle
-            }
-
+            putSerialData(Msg.PDUSpecific, Msg.Data[1], Msg.Data[0]);
+//            for(i=0;i<sizeof(DataList)/sizeof(DataList[0]);i++)
+//            {
+//                if ( DataList[i][0] == Msg.PDUSpecific ) {
+//                    DataList[i][1] = Msg.Data[1];
+//                    DataList[i][2] = Msg.Data[0];
+//                }
+//
+//                putSerialData(DataList[i][0], DataList[i][1], DataList[i][2]);
+//            }
+            LATCbits.LATC4 = 0;
         }
     }
 }

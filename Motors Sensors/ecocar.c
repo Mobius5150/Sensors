@@ -92,3 +92,14 @@ void putSerialData(char DataType, char DataMSB, char DataLSB)
     putUSART(DataMSB);
     putUSART(DataLSB);
 }
+
+int NeedToSendData( int lastData[][3], int newData[][3], int i ) {
+    // Todo, we should check how different the value is, and only send if it differs be a certain percentage
+    if ( lastData[i][1] != newData[i][1] || lastData[i][2] != newData[i][2] ) {
+        lastData[i][1] = newData[i][1];
+        lastData[i][2] = newData[i][2];
+        return 1;
+    }
+
+    return 0;
+}

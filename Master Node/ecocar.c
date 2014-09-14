@@ -87,7 +87,7 @@ void putUSART(int i)
 
 void putSerialData(char DataType, char DataMSB, char DataLSB)
 {
-    putUSART(0xFF);
+//    putUSART(0xFF);
     putUSART(DataType);
     putUSART(DataMSB);
     putUSART(DataLSB);

@@ -16,7 +16,8 @@
 J1939_MESSAGE Msg;
 void main( void ) {
     // Pins C6 and C7 are used for UART TX and RX respectively
-    InitEcoCar(); 
+    InitEcoCar();
+    TRISCbits.RC4 = 0;
 
     // Open USART:
     OpenUSART( USART_TX_INT_OFF &
@@ -40,14 +41,18 @@ void main( void ) {
         //Receive Messages
         J1939_Poll(10);
         while (RXQueueCount > 0) {
-            J1939_DequeueMessage( &Msg );
 
+            J1939_DequeueMessage( &Msg );
+            if ( Msg.GroupExtension >= 0xA0 && Msg.GroupExtension <= 0xA7 )
+                LATCbits.LATC4 = 1;
             // Currently, only broadcast messages are repeated
-            if( Msg.PDUFormat == PDU_BROADCAST )
+//            if( Msg.PDUFormat == PDU_BROADCAST )
                 putSerialData(Msg.GroupExtension, Msg.Data[0], Msg.Data[1]);
             
             if ( J1939_Flags.ReceivedMessagesDropped )
                 J1939_Flags.ReceivedMessagesDropped = 0;
+
+            LATCbits.LATC4 = 0;
         }
     }
 }

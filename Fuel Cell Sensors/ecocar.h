@@ -11,6 +11,8 @@
 #ifndef ECOCAR_H
 #define	ECOCAR_H
 
+#define DATA_ITEM_LENGTH 3
+
 // Function prototype declarations for ecocar.c:
 void Broadcast_Data(J1939_MESSAGE *MsgPtr, unsigned char DataType, unsigned char MsgData[]);
 void Request_Data(J1939_MESSAGE *MsgPtr, unsigned int DestAddr, unsigned int DataType);
@@ -18,6 +20,7 @@ void InitEcoCar(void);
 void Set_Oscillator(void);
 void putUSART(int i);
 void putSerialData(char DataType, char DataMSB, char DataLSB);
+int NeedToSendData( int lastData[][DATA_ITEM_LENGTH], int newData[][DATA_ITEM_LENGTH], int i );
 
 
 // =====================================

@@ -45,17 +45,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=J1939.C main.c ecocar.c AnalogHelper.c
+SOURCEFILES_QUOTED_IF_SPACED=J1939.C main.c ecocar.c AnalogHelper.c speed_detector.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/J1939.o ${OBJECTDIR}/main.o ${OBJECTDIR}/ecocar.o ${OBJECTDIR}/AnalogHelper.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/J1939.o.d ${OBJECTDIR}/main.o.d ${OBJECTDIR}/ecocar.o.d ${OBJECTDIR}/AnalogHelper.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/J1939.o ${OBJECTDIR}/main.o ${OBJECTDIR}/ecocar.o ${OBJECTDIR}/AnalogHelper.o ${OBJECTDIR}/speed_detector.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/J1939.o.d ${OBJECTDIR}/main.o.d ${OBJECTDIR}/ecocar.o.d ${OBJECTDIR}/AnalogHelper.o.d ${OBJECTDIR}/speed_detector.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/J1939.o ${OBJECTDIR}/main.o ${OBJECTDIR}/ecocar.o ${OBJECTDIR}/AnalogHelper.o
+OBJECTFILES=${OBJECTDIR}/J1939.o ${OBJECTDIR}/main.o ${OBJECTDIR}/ecocar.o ${OBJECTDIR}/AnalogHelper.o ${OBJECTDIR}/speed_detector.o
 
 # Source Files
-SOURCEFILES=J1939.C main.c ecocar.c AnalogHelper.c
+SOURCEFILES=J1939.C main.c ecocar.c AnalogHelper.c speed_detector.c
 
 
 CFLAGS=
@@ -114,6 +114,13 @@ ${OBJECTDIR}/AnalogHelper.o: AnalogHelper.c  nbproject/Makefile-${CND_CONF}.mk
 	@${DEP_GEN} -d ${OBJECTDIR}/AnalogHelper.o 
 	@${FIXDEPS} "${OBJECTDIR}/AnalogHelper.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
 	
+${OBJECTDIR}/speed_detector.o: speed_detector.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/speed_detector.o.d 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1 -p$(MP_PROCESSOR_OPTION)   -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/speed_detector.o   speed_detector.c 
+	@${DEP_GEN} -d ${OBJECTDIR}/speed_detector.o 
+	@${FIXDEPS} "${OBJECTDIR}/speed_detector.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
+	
 else
 ${OBJECTDIR}/J1939.o: J1939.C  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
@@ -142,6 +149,13 @@ ${OBJECTDIR}/AnalogHelper.o: AnalogHelper.c  nbproject/Makefile-${CND_CONF}.mk
 	${MP_CC} $(MP_EXTRA_CC_PRE) -p$(MP_PROCESSOR_OPTION)   -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/AnalogHelper.o   AnalogHelper.c 
 	@${DEP_GEN} -d ${OBJECTDIR}/AnalogHelper.o 
 	@${FIXDEPS} "${OBJECTDIR}/AnalogHelper.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
+	
+${OBJECTDIR}/speed_detector.o: speed_detector.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/speed_detector.o.d 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -p$(MP_PROCESSOR_OPTION)   -I ${MP_CC_DIR}\\..\\h  -fo ${OBJECTDIR}/speed_detector.o   speed_detector.c 
+	@${DEP_GEN} -d ${OBJECTDIR}/speed_detector.o 
+	@${FIXDEPS} "${OBJECTDIR}/speed_detector.o.d" $(SILENT) -rsi ${MP_CC_DIR}../ -c18 
 	
 endif
 

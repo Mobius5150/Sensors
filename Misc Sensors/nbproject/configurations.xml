@@ -16,14 +16,15 @@
                    displayName="Source Files"
                    projectFiles="true">
       <itemPath>J1939.C</itemPath>
-      <itemPath>main.c</itemPath>
       <itemPath>ecocar.c</itemPath>
       <itemPath>AnalogHelper.c</itemPath>
+      <itemPath>main.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
                    projectFiles="false">
       <itemPath>Makefile</itemPath>
+      <itemPath>j1939.def</itemPath>
     </logicalFolder>
   </logicalFolder>
   <projectmakefile>Makefile</projectmakefile>
