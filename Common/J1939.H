@@ -44,8 +44,9 @@
  * Caio Gubel           6/11/04     Formatted
  ********************************************************************/
 
-#include        <p18cxxx.h>
-#include        "j1939.def"
+#ifndef __j1939def
+#include "j1939def.h"
+#endif
 
 #ifndef __J1939_H
 #define __J1939_H

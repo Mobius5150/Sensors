@@ -4,8 +4,8 @@
 */
 
 #include <p18cxxx.h>
-#include "J1939.h"
-#include "ecocar.h"
+#include "..\Common\J1939.h"
+#include "..\Common\ecocar.h"
 #include <delays.h>
 #pragma config OSC = IRCIO67    // Oscillator Selection Bit
 #pragma config BOREN = OFF      // Brown-out Reset disabled in hardware and software
