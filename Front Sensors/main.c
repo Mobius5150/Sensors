@@ -16,8 +16,6 @@ J1939_MESSAGE Msg;
 
 J1939_MESSAGE Msg;
 void main( void ) {
-    
-
     // Pins C6 and C7 are used for UART TX and RX respectively
     InitEcoCar();
     J1939_Initialization( TRUE );
